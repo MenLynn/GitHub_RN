@@ -1,34 +1,18 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
 import {
   createAppContainer,
   createMaterialTopTabNavigator
 } from 'react-navigation';
-import NavigationUtil from '../navigator/NavigationUtil';
+import {StyleSheet, Text, View, Button, FlatList, RefreshControl} from 'react-native';
+import {connect} from 'react-redux';
+import actions from '../action/index';
+import PopularItem from '../common/PopularItem';
+
+const URL = 'https://api.github.com/search/repositories?q=';
+const QUERY_STR = '&sort=stars';
+const THEME_COLOR = '#f00';
 
 type Props = {};
-class PopularTab extends Component<Props> {
-  render() {
-    const {tabLabel} = this.props;
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>{tabLabel}</Text>
-        <Text onPress={() => {
-          NavigationUtil.goPage({
-            navigation: this.props.navigation
-          }, 'DetailPage')
-        }}>跳转到</Text>
-        <Button
-          title={'离线缓存'}
-          onPress={() => {
-            NavigationUtil.goPage({
-              navigation: this.props.navigation
-            }, 'DataStoreDemoPage')
-          }} />
-      </View>
-    );
-  }
-}
 export default class PopularPage extends Component<Props> {
   constructor(props) {
     super(props);
@@ -39,7 +23,7 @@ export default class PopularPage extends Component<Props> {
     this.tabNames.forEach((item, index) => {
       tabs[`tab${index}`] = {
         // screen: PopularTab,  // 不传参数的写法
-        screen: props => <PopularTab {...props} tabLabel={item}/>,  // 传递参数的写法
+        screen: props => <PopularTabPage {...props} tabLabel={item}/>,  // 传递参数的写法
         navigationOptions: {
           title: item
         }
@@ -82,6 +66,68 @@ export default class PopularPage extends Component<Props> {
     </View>;
   }
 }
+
+class PopularTab extends Component<Props> {
+  constructor(props) {
+    super(props);
+    const {tabLabel} = this.props;
+    this.storeName = tabLabel;
+  }
+  componentDidMount() {
+    this.loadData();
+  }
+  loadData() {
+    const {onLoadPopularData} = this.props;
+    const url = this.getFetchUrl(this.storeName);
+    onLoadPopularData(this.storeName, url)
+  }
+  getFetchUrl(key) {
+    return URL + key + QUERY_STR;
+  }
+  renderItem(data) {
+    const item = data.item;
+    return <PopularItem item={item} onSelect={() => {}}/>
+  }
+  render() {
+    const {popular} = this.props;
+    let store = popular[this.storeName];
+    if (!store) {
+      store = {
+        items: [],
+        isLoading: false
+      }
+    }
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={store.items}
+          refreshControl={
+            <RefreshControl
+              title={'loading'}
+              titleColor={THEME_COLOR}
+              colors={[THEME_COLOR]}
+              tintColor={THEME_COLOR}
+              refreshing={store.isLoading}
+              onRefresh={() => this.loadData()}/>
+          }
+          renderItem={data => this.renderItem(data)}
+          keyExtractor={item => "" + item.id}/>
+      </View>
+    );
+  }
+}
+
+/***
+ * 订阅 使用
+ * ***/
+const mapStateToProps = state => ({
+  popular: state.popular
+});
+const mapDispatchToProps = dispatch => ({
+  onLoadPopularData: (storeName, url) => dispatch(actions.onLoadPopularData(storeName, url))
+});
+
+const PopularTabPage = connect(mapStateToProps, mapDispatchToProps)(PopularTab);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,6 +1,6 @@
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import reducers from '../reducer';
+import reducers from '../reducer';  // 实现异步action
 import {middleware} from '../navigator/AppNavigators';
 
 /*
