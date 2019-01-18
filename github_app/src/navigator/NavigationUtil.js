@@ -4,7 +4,6 @@
 export default class NavigationUtil {
   // 跳转到指定页
   static goPage(params, page) {
-    console.log(33);
     const navigation = NavigationUtil.navigation;
     if (!navigation) {
       console.log('navigation can not bu null!');

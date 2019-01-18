@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Platform, StyleSheet, Text, View} from 'react-native';
 import {connect} from "react-redux";
-import actions from "../action";
+import actions from "../action/index";
 
 type Props = {};
 class FavoritePage extends Component<Props> {

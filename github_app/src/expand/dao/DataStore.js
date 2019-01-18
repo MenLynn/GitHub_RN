@@ -81,6 +81,7 @@ export default class DataStore {
             throw new Error('Network response was not ok.');
           })
           .then((responseData) => {
+            console.log(55);
             this.saveData(url, responseData)
             resolve(responseData);
           })

@@ -22,7 +22,7 @@ export default class PopularItem extends Component {
           <View style={styles.row}>
             <View style={{flexDirection: 'row',alignItems: 'center'}}>
               <Text>Author:</Text>
-              <Image style={{width: 22,height: 22}} source={{uri: item.owner.avatar_url}}/>
+              <Image style={{width: 22,height: 22,marginLeft: 5}} source={{uri: item.owner.avatar_url}}/>
             </View>
             <View style={{flexDirection: 'row',justifyContent: 'space-between'}}>
               <Text>Start:</Text>
