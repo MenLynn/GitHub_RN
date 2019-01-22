@@ -1,4 +1,5 @@
 import {AsyncStorage} from 'react-native';
+export const FLAG_STORAGE = {};
 
 export default class DataStore {
   /**
