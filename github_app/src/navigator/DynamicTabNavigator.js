@@ -1,12 +1,6 @@
 import React, {Component} from 'react';
-import {
-  createBottomTabNavigator,
-  createAppContainer
-} from 'react-navigation';
-import {
-  BottomTabBar
-} from 'react-navigation-tabs';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import {BottomTabBar} from 'react-navigation-tabs';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';

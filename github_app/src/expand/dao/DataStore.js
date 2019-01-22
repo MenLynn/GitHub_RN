@@ -1,5 +1,7 @@
 import {AsyncStorage} from 'react-native';
-export const FLAG_STORAGE = {};
+import Trending from 'GitHubTrending';
+
+export const FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'};
 
 export default class DataStore {
   /**
@@ -73,7 +75,7 @@ export default class DataStore {
    */
   fetchNetData(url, flag) {
     return new Promise((resolve, reject) => {
-      // if (flag !== FLAG_STORAGE.flag_trending) {
+      if (flag !== FLAG_STORAGE.flag_trending) {  // 如果是 最热 模块
         fetch(url)
           .then((response) => {
             if (response.ok) {
@@ -83,25 +85,25 @@ export default class DataStore {
           })
           .then((responseData) => {
             console.log(55);
-            this.saveData(url, responseData)
+            this.saveData(url, responseData);
             resolve(responseData);
           })
           .catch((error) => {
             reject(error);
           })
-      // } else {
-      //   new Trending().fetchTrending(url)
-      //     .then(items => {
-      //       if (!items) {
-      //         throw new Error('responseData is null');
-      //       }
-      //       this.saveData(url, items);
-      //       resolve(items);
-      //     })
-      //     .catch(error => {
-      //       reject(error);
-      //     })
-      // }
+      } else {  // 如果是 趋势 模块
+        new Trending().fetchTrending(url)
+          .then(items => {
+            if (!items) {
+              throw new Error('responseData is null');
+            }
+            this.saveData(url, items);
+            resolve(items);
+          })
+          .catch(error => {
+            reject(error);
+          })
+      }
     })
   }
 
