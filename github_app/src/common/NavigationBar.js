@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   navBarButton: {
     alignSelf: 'center',
-    marginHorizontal: 10,
+    // marginHorizontal: 10,
   },
   navBar: {
     flexDirection: 'row',

@@ -1,35 +1,88 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {DeviceInfo, Platform, StyleSheet, Text, TouchableOpacity, View, WebView} from 'react-native';
 import NavigationBar from "../common/NavigationBar";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import ViewUtil from '../util/ViewUtil';
+import NavigationUtil from "../navigator/NavigationUtil";
+import BackPressComponent from "../common/BackPressComponent";
+import {NavigationActions} from "react-navigation";
 
 const THEME_COLOR = '#678';
+const TRENDING_URL = 'https://github.com/';
 
 type Props = {};
 export default class DetailPage extends Component<Props> {
-  getLeftButton(callBack) {
-    return <TouchableOpacity
-      style={{padding: 8,paddingLeft: 12}}
-      onPress={callBack}>
-      <Ionicons name={'ios-arrow-back'} size={26} style={{color: '#fff'}}/>
-    </TouchableOpacity>
+  constructor(props) {
+    super(props);
+    this.params = this.props.navigation.state.params;
+    const {projectModels} = this.params;
+    this.url = projectModels.html_url || TRENDING_URL + projectModels.fullName;
+    const title = projectModels.full_name || projectModels.fullName;
+    this.state = {
+      title: title,
+      url: this.url,
+      canGoBack: false
+    };
+    // 物理返回键的处理
+    this.backPress = new BackPressComponent({backPress: this.onBackPress});
+  }
+  componentDidMount() {
+    this.backPress.componentDidMount();
+  }
+  componentWillUnmount() {
+    this.backPress.componentWillUnmount();
+  }
+  /**
+   * Android模式的物理返回键处理
+   */
+  onBackPress = () => {
+    this.onBack();
+    return true;
+  };
+  onBack() {
+    if (this.state.canGoBack) {
+      this.webView.goBack();
+    } else {
+      NavigationUtil.goBack(this.props.navigation);
+    }
+  }
+  renderRightButton() {
+    return (<View style={{flexDirection: 'row',alignItems: 'center'}}>
+      <TouchableOpacity
+        onPress={() => {}}
+      >
+        <FontAwesome name={'star-o'} size={20} style={{color: '#fff',marginRight: 5}}/>
+      </TouchableOpacity>
+      {
+        ViewUtil.getShareButton(() => {})
+      }
+    </View>)
+  }
+  onNavigationStateChange(e) {
+    this.setState({
+      canGoBack: e.canGoBack,
+      url: e.url
+    })
   }
   render() {
-    let statusBar = {
-      backgroundColor: THEME_COLOR,
-      barStyle: 'light-content',
-    };
+    const titleLayoutStyle = this.state.title.length > 20 ? {paddingRight: 30} : null;
     let navigationBar =
       <NavigationBar
-        title={'详情'}
-        statusBar={statusBar}
+        title={this.state.title}
         style={{backgroundColor: THEME_COLOR}}
-        leftButton={this.getLeftButton()}
+        titleLayoutStyle={titleLayoutStyle}
+        leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
+        rightButton={this.renderRightButton()}
       />;
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
         {navigationBar}
-        <Text style={styles.welcome}>DetailPage!</Text>
+        <WebView
+          ref={webView => this.webView = webView}
+          startInLoadingState={true}
+          onNavigationStateChange={e => this.onNavigationStateChange(e)}
+          source={{uri: this.state.url}}
+        />
       </View>
     );
   }
@@ -41,10 +94,5 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
   }
 });
