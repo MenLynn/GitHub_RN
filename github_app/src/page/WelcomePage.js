@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import NavigationUtil from '../navigator/NavigationUtil';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 type Props = {};
 export default class WelcomePage extends Component<Props> {
@@ -17,7 +18,8 @@ export default class WelcomePage extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>WelcomePage!</Text>
+        <Text style={styles.welcome}>GitHub App</Text>
+        <AntDesign name={'github'} size={40} style={{color: '#fff',marginTop: 30}}/>
       </View>
     );
   }
@@ -28,11 +30,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#678',
   },
   welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+    color: '#fff',
+    fontSize: 30,
+    textAlign: 'center'
   }
 });
