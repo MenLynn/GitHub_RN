@@ -113,9 +113,11 @@ class PopularTab extends Component<Props> {
     const item = data.item;
     return <PopularItem
       projectModel={item}
-      onSelect={() => {
+      onSelect={(callback) => {  // callback详情点击收藏时改变当前对应的列表的收藏状态
         NavigationUtil.goPage({
-          projectModels: item.item
+          projectModel: item,
+          flag: FLAG_STORAGE.flag_popular,
+          callback
         }, 'DetailPage')
       }}
       onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_popular)}

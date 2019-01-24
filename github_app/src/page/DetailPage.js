@@ -5,7 +5,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ViewUtil from '../util/ViewUtil';
 import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressComponent from "../common/BackPressComponent";
-import {NavigationActions} from "react-navigation";
+import FavoriteDao from "../expand/dao/FavoriteDao";
 
 const THEME_COLOR = '#678';
 const TRENDING_URL = 'https://github.com/';
@@ -15,13 +15,15 @@ export default class DetailPage extends Component<Props> {
   constructor(props) {
     super(props);
     this.params = this.props.navigation.state.params;
-    const {projectModels} = this.params;
-    this.url = projectModels.html_url || TRENDING_URL + projectModels.fullName;
-    const title = projectModels.full_name || projectModels.fullName;
+    const {projectModel, flag} = this.params;
+    this.url = projectModel.item.html_url || TRENDING_URL + projectModel.item.fullName;
+    const title = projectModel.item.full_name || projectModel.item.fullName;
+    this.favoriteDao = new FavoriteDao(flag);
     this.state = {
       title: title,
       url: this.url,
-      canGoBack: false
+      canGoBack: false,
+      isFavorite: projectModel.isFavorite
     };
     // 物理返回键的处理
     this.backPress = new BackPressComponent({backPress: this.onBackPress});
@@ -46,12 +48,29 @@ export default class DetailPage extends Component<Props> {
       NavigationUtil.goBack(this.props.navigation);
     }
   }
+  onFavoriteButtonClick() {
+    const {projectModel, callback} = this.params;
+    const isFavorite = projectModel.isFavorite = !projectModel.isFavorite;
+    callback(isFavorite);
+    this.setState({
+      isFavorite: isFavorite
+    });
+    let key = projectModel.fullName ? projectModel.fullName : projectModel.id.toString();
+    if (projectModel.isFavorite) {
+      this.favoriteDao.saveFavoriteItem(key, JSON.stringify(projectModel));
+    } else {
+      this.favoriteDao.removeFavoriteItem(key);
+    }
+  }
   renderRightButton() {
     return (<View style={{flexDirection: 'row',alignItems: 'center'}}>
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={() => this.onFavoriteButtonClick()}
       >
-        <FontAwesome name={'star-o'} size={20} style={{color: '#fff',marginRight: 5}}/>
+        <FontAwesome
+          name={this.state.isFavorite ? 'star' : 'star-o'}
+          size={20}
+          style={{color: '#fff',marginRight: 5}}/>
       </TouchableOpacity>
       {
         ViewUtil.getShareButton(() => {})
