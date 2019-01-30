@@ -80,7 +80,6 @@ export default class FavoriteDao {
   getAllItems() {
     return new Promise((resolve, reject) => {
       this.getFavoriteKeys().then((keys) => {
-        console.log(keys);
         let items = [];
         if (keys) {
           AsyncStorage.multiGet(keys, (err, stores) => {

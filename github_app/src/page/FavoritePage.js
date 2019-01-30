@@ -3,7 +3,7 @@ import {
   createAppContainer,
   createMaterialTopTabNavigator
 } from 'react-navigation';
-import {StyleSheet, Text, View, FlatList, RefreshControl, ActivityIndicator, DeviceInfo} from 'react-native';
+import {StyleSheet, Text, View, FlatList, RefreshControl, ActivityIndicator, DeviceInfo, AsyncStorage} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import {connect} from 'react-redux';
 import actions from '../action/index';
@@ -14,6 +14,8 @@ import NavigationUtil from "../navigator/NavigationUtil";
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import {FLAG_STORAGE} from "../expand/dao/DataStore";
 import FavoriteUtil from "../util/FavoriteUtil";
+import EventBus from 'react-native-event-bus'
+import EventTypes from '../util/EventTypes';
 
 const THEME_COLOR = '#678';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
@@ -78,6 +80,15 @@ class FavoriteTab extends Component<Props> {
   }
   componentDidMount() {
     this.loadData(true);
+    // 创建监听器
+    EventBus.getInstance().addListener(EventTypes.bottom_tab_select, this.listener = data => {
+      if (data.to === 2) {  // 当前index
+        this.loadData(false);
+      }
+    })
+  }
+  componentWillUnmount() {
+    EventBus.getInstance().removeListener(this.listener)
   }
   loadData(isShowLoading) {
     const {onLoadFavoriteData} = this.props;
@@ -95,8 +106,15 @@ class FavoriteTab extends Component<Props> {
     }
     return store;
   }
+  onFavorite(item, isFavorite) {
+    FavoriteUtil.onFavorite(this.favoriteDao, item, isFavorite, this.storeName);
+    if (this.storeName === FLAG_STORAGE.flag_popular) {
+      EventBus.getInstance().fireEvent(EventTypes.favorite_changed_popular);
+    } else {
+      EventBus.getInstance().fireEvent(EventTypes.favorite_changed_trending);
+    }
+  }
   renderItem(data) {
-    // console.log(this.storeName);
     const item = data.item;
     const Item = this.storeName === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem;
     return <Item
@@ -108,7 +126,8 @@ class FavoriteTab extends Component<Props> {
           callback
         }, 'DetailPage')
       }}
-      onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.storeName)}
+      // onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(this.favoriteDao, item, isFavorite, this.storeName)}
+      onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
     />
   }
   genIndicator() {

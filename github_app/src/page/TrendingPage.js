@@ -3,7 +3,7 @@ import {
   createAppContainer,
   createMaterialTopTabNavigator
 } from 'react-navigation';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator, DeviceInfo, DeviceEventEmitter} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator, DeviceInfo, DeviceEventEmitter, AsyncStorage} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
@@ -15,6 +15,8 @@ import NavigationUtil from "../navigator/NavigationUtil";
 import FavoriteDao from "../expand/dao/FavoriteDao";
 import {FLAG_STORAGE} from "../expand/dao/DataStore";
 import FavoriteUtil from "../util/FavoriteUtil";
+import EventBus from "react-native-event-bus";
+import EventTypes from "../util/EventTypes";
 
 const URL = 'https://github.com/trending/';
 const THEME_COLOR = '#678';
@@ -121,27 +123,43 @@ class TrendingTab extends Component<Props> {
     const {tabLabel, timeSpan} = this.props;
     this.storeName = tabLabel;
     this.timeSpan = timeSpan;
+    this.isFavoriteChanged = false;
   }
   componentDidMount() {
     this.loadData();
+    // 头部类型切换的监听
     this.timeSpanChangeListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIME_SPAN_CHANGE, (timeSpan) => {
       this.timeSpan = timeSpan;
       this.loadData();
+    });
+    // 创建监听器
+    EventBus.getInstance().addListener(EventTypes.favorite_changed_trending, this.favoriteChangeListener = data => {
+      this.isFavoriteChanged = true;
+    });
+    EventBus.getInstance().addListener(EventTypes.bottom_tab_select, this.bottomTabSelectListener = data => {
+      // 收藏模块中收藏状态改变 并且 tab切换到 趋势模块
+      if (data.to === 1 && this.isFavoriteChanged) {
+        this.loadData(null, true);
+      }
     })
   }
   componentWillUnmount() {
     if (this.timeSpanChangeListener) {
       this.timeSpanChangeListener.remove()
     }
+    EventBus.getInstance().removeListener(this.favoriteChangeListener);
+    EventBus.getInstance().removeListener(this.bottomTabSelectListener);
   }
-  loadData(loadMore) {
-    const {onRefreshTrending, onLoadMoreTrending} = this.props;
+  loadData(loadMore, refreshFavorite) {
+    const {onRefreshTrending, onLoadMoreTrending, onFreshTrendingFavorite} = this.props;
     const url = this.getFetchUrl(this.storeName);
     const store = this._store();
     if (loadMore) {
       onLoadMoreTrending(this.storeName, ++store.pageIndex, pageSize, store.items, favoriteDao, callback => {
         this.refs.toast.show('没有更多了');
       })
+    } else if (refreshFavorite) {
+      onFreshTrendingFavorite(this.storeName, store.pageIndex, pageSize, store.items, favoriteDao);
     } else {
       onRefreshTrending(this.storeName, url, pageSize, favoriteDao)
     }
@@ -231,7 +249,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   onRefreshTrending: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onRefreshTrending(storeName, url, pageSize, favoriteDao)),
-  onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callBack) => dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callBack))
+  onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callBack) => dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callBack)),
+  onFreshTrendingFavorite: (storeName, pageIndex, pageSize, items, favoriteDao) => dispatch(actions.onFreshTrendingFavorite(storeName, pageIndex, pageSize, items, favoriteDao))
 });
 
 const TrendingTabPage = connect(mapStateToProps, mapDispatchToProps)(TrendingTab);

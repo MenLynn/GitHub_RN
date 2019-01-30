@@ -65,3 +65,26 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
     })
   }
 }
+
+/**
+ * 刷新收藏状态
+ * @param storeName
+ * @param pageIndex
+ * @param pageSize
+ * @param dataArray
+ * @param favoriteDao
+ */
+export function onFreshTrendingFavorite(storeName, pageIndex, pageSize, dataArray = [], favoriteDao) {
+  return dispatch => {
+    //本次和载入的最大数量
+    let max = pageSize * pageIndex > dataArray.length ? dataArray.length : pageSize * pageIndex;
+    _projectModels(dataArray.slice(0, max), favoriteDao, data => {
+      dispatch({
+        type: Types.FLUSH_TRENDING_FAVORITE,
+        storeName,
+        pageIndex,
+        projectModels: data,
+      })
+    })
+  }
+}

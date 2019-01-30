@@ -4,6 +4,8 @@ import {BottomTabBar} from 'react-navigation-tabs';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import EventBus from 'react-native-event-bus'
+import EventTypes from '../util/EventTypes';
 import {connect} from 'react-redux';
 
 import PopularPage from '../page/PopularPage';
@@ -104,7 +106,15 @@ class DynamicTabNavigator extends Component<Props> {
   }
   render() {
     const Tab = this._tabNavigator();
-    return <Tab />
+    return <Tab
+      // 监听底部tab切换时  路由的变化
+      onNavigationStateChange={(prevState, newState, action) => {
+        EventBus.getInstance().fireEvent(EventTypes.bottom_tab_select, {
+          from: prevState.index,
+          to: newState.index
+        })
+      }}
+    />
   }
 }
 

@@ -8,19 +8,19 @@ import ProjectModel from "../../model/ProjectModel";
  * pageSize
  */
 export function onLoadFavoriteData(flag, isShowLoading) {
-  console.log('index:  ' + flag);
   return dispatch => {
-    dispatch({
-      type: Types.FAVORITE_LOAD_DATA,
-      storeName: flag
-    });
+    if (isShowLoading) {
+      dispatch({
+        type: Types.FAVORITE_LOAD_DATA,
+        storeName: flag
+      });
+    }
     new FavoriteDao(flag).getAllItems()
       .then(items => {
         let resultData = [];
         for (let i = 0, len = items.length;i < len;i++) {
           resultData.push(new ProjectModel(items[i], true));
         }
-        console.log(resultData);
         dispatch({
           type: Types.FAVORITE_LOAD_SUCCESS,
           projectModels: resultData,
