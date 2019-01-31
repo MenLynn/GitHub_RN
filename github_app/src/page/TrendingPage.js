@@ -17,6 +17,7 @@ import {FLAG_STORAGE} from "../expand/dao/DataStore";
 import FavoriteUtil from "../util/FavoriteUtil";
 import EventBus from "react-native-event-bus";
 import EventTypes from "../util/EventTypes";
+import GlobalStyles from "../res/GlobalStyles";
 
 const URL = 'https://github.com/trending/';
 const THEME_COLOR = '#678';
@@ -109,7 +110,7 @@ export default class TrendingPage extends Component<Props> {
       style={{backgroundColor: THEME_COLOR,}}
     />;
     const TabNavigator = this._tabNav();
-    return <View style={[styles.container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
+    return <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
       {navigationBar}
       <TabNavigator />
       {this.renderTrendingDialog()}
@@ -206,7 +207,7 @@ class TrendingTab extends Component<Props> {
   render() {
     let store = this._store();
     return (
-      <View style={styles.container}>
+      <View style={GlobalStyles.root_container}>
         <FlatList
           data={store.projectModels}
           renderItem={data => this.renderItem(data)}
@@ -256,10 +257,6 @@ const mapDispatchToProps = dispatch => ({
 const TrendingTabPage = connect(mapStateToProps, mapDispatchToProps)(TrendingTab);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-  },
   tabStyle: {
     // minWidth: 50
     padding: 0,

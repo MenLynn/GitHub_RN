@@ -15,6 +15,7 @@ import {FLAG_STORAGE} from "../expand/dao/DataStore";
 import FavoriteUtil from "../util/FavoriteUtil";
 import EventBus from "react-native-event-bus";
 import EventTypes from "../util/EventTypes";
+import GlobalStyles from "../res/GlobalStyles";
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -67,7 +68,7 @@ export default class PopularPage extends Component<Props> {
         }
       }
     ));
-    return <View style={[styles.container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
+    return <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
       {navigationBar}
       <TabNavigator />
     </View>;
@@ -154,7 +155,7 @@ class PopularTab extends Component<Props> {
   render() {
     let store = this._store();
     return (
-      <View style={styles.container}>
+      <View style={GlobalStyles.root_container}>
         <FlatList
           data={store.projectModels}
           renderItem={data => this.renderItem(data)}
@@ -204,10 +205,6 @@ const mapDispatchToProps = dispatch => ({
 const PopularTabPage = connect(mapStateToProps, mapDispatchToProps)(PopularTab);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-  },
   tabStyle: {
     // minWidth: 50
     padding: 0,

@@ -16,6 +16,7 @@ import {FLAG_STORAGE} from "../expand/dao/DataStore";
 import FavoriteUtil from "../util/FavoriteUtil";
 import EventBus from 'react-native-event-bus'
 import EventTypes from '../util/EventTypes';
+import GlobalStyles from "../res/GlobalStyles";
 
 const THEME_COLOR = '#678';
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
@@ -64,7 +65,7 @@ export default class FavoritePage extends Component<Props> {
         }
       }
     ));
-    return <View style={[styles.container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
+    return <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
       {navigationBar}
       <TabNavigator />
     </View>;
@@ -142,7 +143,7 @@ class FavoriteTab extends Component<Props> {
   render() {
     let store = this._store();
     return (
-      <View style={styles.container}>
+      <View style={GlobalStyles.root_container}>
         <FlatList
           data={store.projectModels}
           renderItem={data => this.renderItem(data)}
@@ -176,10 +177,6 @@ const mapDispatchToProps = dispatch => ({
 const FavoriteTabPage = connect(mapStateToProps, mapDispatchToProps)(FavoriteTab);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-  },
   tabStyle: {
     // minWidth: 50
     padding: 0,
