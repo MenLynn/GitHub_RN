@@ -7,30 +7,32 @@ import NavigationBar from '../common/NavigationBar';
 import {createAppContainer, createMaterialTopTabNavigator} from "react-navigation";
 import {FLAG_STORAGE} from "../expand/dao/DataStore";
 import {MORE_MENU} from "../common/MORE_MENU";
-import GlobalStyles from "../res/GlobalStyles";
+import GlobalStyles from "../res/styles/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
 
 const THEME_COLOR = '#678';
 
 type Props = {};
 export default class MyPage extends Component<Props> {
-  getRightButton() {
-    return <View style={{flexDirection: 'row'}}>
-      <TouchableOpacity onPress={() => {}}>
-        <View style={{padding: 5,marginRight: 10}}>
-          <Feather name={'search'} size={24} style={{color: '#fff'}}/>
-        </View>
-      </TouchableOpacity>
-    </View>
+  onclick(menu) {
+    let RouteName, params = {};
+    switch (menu) {
+      case MORE_MENU.Tutorial:
+        RouteName = 'WebViewPage';
+        params.title = '教程';
+        params.url = 'https://coding.m.imooc.com/classindex.html?cid=89';
+        break;
+      case MORE_MENU.About:
+        RouteName = 'AboutPage';
+        break;
+      case MORE_MENU.About_Author:
+        RouteName = 'AboutMePage';
+        break;
+    }
+    if (RouteName) {
+      NavigationUtil.goPage(params, RouteName);
+    }
   }
-  getLeftButton(callBack) {
-    return <TouchableOpacity
-      style={{padding: 8,paddingLeft: 12}}
-      onPress={callBack}>
-      <Ionicons name={'ios-arrow-back'} size={26} style={{color: '#fff'}}/>
-    </TouchableOpacity>
-  }
-  onclick(menu) {}
   getItem(menu) {
     return ViewUtil.getMenuItem(() => this.onclick(menu), menu, THEME_COLOR)
   }
@@ -45,14 +47,13 @@ export default class MyPage extends Component<Props> {
         title={'我的'}
         statusBar={statusBar}
         style={{backgroundColor: THEME_COLOR}}
-        // leftButton={this.getLeftButton()}
-        // rightButton={this.getRightButton()}
       />;
     return (
       <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
         {navigationBar}
         <ScrollView>
           <TouchableOpacity
+            activeOpacity={1}
             style={styles.item}
             onPress={() => this.onclick(MORE_MENU.About)}
           >

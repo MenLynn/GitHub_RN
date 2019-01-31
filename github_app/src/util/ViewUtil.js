@@ -12,7 +12,7 @@ export default class ViewUtil {
       <Ionicons
         name={'ios-arrow-back'}
         size={26}
-        style={{color: '#fff'}}/>
+        style={{color: '#fff',width: 26,height: 26}}/>
     </TouchableOpacity>
   }
   /** 右侧的分享按钮
@@ -25,7 +25,7 @@ export default class ViewUtil {
       <Ionicons
         name={'md-share'}
         size={20}
-        style={{color: '#fff',marginRight: 10}}/>
+        style={{color: '#fff',marginRight: 10,width: 20,height: 20}}/>
     </TouchableOpacity>
   }
   /**
@@ -41,6 +41,7 @@ export default class ViewUtil {
   static getSettingItem(callBack, text, color, Icons, icon, expandableIco) {
     return (
       <TouchableOpacity
+        activeOpacity={1}
         onPress={callBack}
         style={styles.setting_item_container}
       >

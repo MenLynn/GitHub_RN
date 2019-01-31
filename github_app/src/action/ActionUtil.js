@@ -34,8 +34,6 @@ export async function _projectModels(showItems, favoriteDao, callback) {
   } catch (e) {
     console.log(e);
   }
-  console.log('keys------');
-  console.log(keys);
   let projectModels = [];
   for (let i = 0, len = showItems.length;i < len;i++) {
     projectModels.push(new ProjectModel(showItems[i], Utils.checkFavorite(showItems[i], keys)))

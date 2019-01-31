@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {BackHandler, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import NavigationUtil from '../navigator/NavigationUtil';
 import DynamicTabNavigator from '../navigator/DynamicTabNavigator';
 import {NavigationActions} from 'react-navigation';
-import actions from "../action";
 import {connect} from "react-redux";
 import BackPressComponent from "../common/BackPressComponent";
 
