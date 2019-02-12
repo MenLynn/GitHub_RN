@@ -18,6 +18,8 @@ import FavoriteUtil from "../util/FavoriteUtil";
 import EventBus from "react-native-event-bus";
 import EventTypes from "../util/EventTypes";
 import GlobalStyles from "../res/styles/GlobalStyles";
+import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
+import ArrayUtil from "../util/ArrayUtil";
 
 const URL = 'https://github.com/trending/';
 const THEME_COLOR = '#678';
@@ -26,22 +28,29 @@ const EVENT_TYPE_TIME_SPAN_CHANGE = 'EVENT_TYPE_TIME_SPAN_CHANGE'; // 事件常�
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 
 type Props = {};
-export default class TrendingPage extends Component<Props> {
+class TrendingPage extends Component<Props> {
   constructor(props) {
     super(props);
-    this.tabNames = ['All', 'C', 'C#', 'C++', 'PHP', 'Javascript'];
     this.state = {
       timeSpan: TimeSpans[0]
-    }
+    };
+    const {onLoadLanguage} = this.props;
+    onLoadLanguage(FLAG_LANGUAGE.flag_language);
+
+    this.preKeys = [];
   }
   _getTabs() {
     const tabs = {};
-    this.tabNames.forEach((item, index) => {
-      tabs[`tab${index}`] = {
-        // screen: TrendingTab,  // 不传参数的写法
-        screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item}/>,  // 传递参数的写法
-        navigationOptions: {
-          title: item
+    const {keys} = this.props;
+    this.preKeys = keys;
+    keys.forEach((item, index) => {
+      if (item.checked) {
+        tabs[`tab${index}`] = {
+          // screen: TrendingTab,  // 不传参数的写法
+          screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item.name}/>,  // 传递参数的写法
+          navigationOptions: {
+            title: item.name
+          }
         }
       }
     });
@@ -78,7 +87,7 @@ export default class TrendingPage extends Component<Props> {
     </View>
   }
   _tabNav() {
-    if (!this.tabNav) {
+    if (!this.tabNav || !ArrayUtil.isEqual(this.preKeys, this.props.keys)) {
       // 动态设置top tab
       this.tabNav = createAppContainer(createMaterialTopTabNavigator(
         this._getTabs(), {
@@ -99,6 +108,7 @@ export default class TrendingPage extends Component<Props> {
     return this.tabNav;
   }
   render() {
+    const {keys} = this.props;
     let statusBar = {
       backgroundColor: THEME_COLOR,
       barStyle: 'light-content'
@@ -109,14 +119,22 @@ export default class TrendingPage extends Component<Props> {
       statusBar={statusBar}
       style={{backgroundColor: THEME_COLOR,}}
     />;
-    const TabNavigator = this._tabNav();
+    const TabNavigator = keys.length ? this._tabNav() : null;
     return <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
       {navigationBar}
-      <TabNavigator />
+      {TabNavigator && <TabNavigator />}
       {this.renderTrendingDialog()}
     </View>;
   }
 }
+
+const mapTrendingStateToProps = state => ({
+  keys: state.language.languages
+});
+const mapTrendingDispatchToProps = dispatch => ({
+  onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag))
+});
+export default connect(mapTrendingStateToProps, mapTrendingDispatchToProps)(TrendingPage);
 
 class TrendingTab extends Component<Props> {
   constructor(props) {

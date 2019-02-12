@@ -7,8 +7,8 @@
  
    * [x] Navigator
    * [x] Pages
-   * [ ] Redux
-   * [ ] Fetch
+   * [x] Redux
+   * [x] Fetch
  
 ### 路由导航 
  
@@ -22,15 +22,20 @@
         
 ### 状态管理
 
-   * [ ] Redux
+   * [x] Redux
     
 ### 接口交互
 
-   * [ ] Fetch 
+   * [x] Fetch 
  
 ### 相关包
 
    * [x] react-navigation 
    * [x] react-native-vector-icons 
    * [x] react-navigation-tabs 
+   * [x] react-native-easy-toast 
+   * [x] react-native-htmlview
+   * [x] react-native-event-bus  发送事件进行监听 与 DeviceEventEmitter事件监听 相似
+   * [x] react-native-parallax-scroll-view
+   	https://github.com/i6mi6/react-native-parallax-scroll-view
  
