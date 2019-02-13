@@ -28,6 +28,20 @@ export default class ViewUtil {
         style={{color: '#fff',marginRight: 10,width: 20,height: 20}}/>
     </TouchableOpacity>
   }
+
+  /**
+   * 获取右侧文本按钮
+   * @param title
+   * @param callBack
+   * @returns {*}
+   */
+  static getRightButton(title, callBack) {
+    return <TouchableOpacity
+      style={{alignItems: 'center'}}
+      onPress={callBack}>
+      <Text style={{fontSize: 20,color: '#fff',marginRight: 10}}>{title}</Text>
+    </TouchableOpacity>
+  }
   /**
    * 获取设置页的Item
    * @param callBack 单击item的回调

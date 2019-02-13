@@ -71,7 +71,8 @@ class PopularPage extends Component<Props> {
           },
           indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
           labelStyle: styles.labelStyle,  // 文字的样式
-        }
+        },
+        lazy: true  // 懒加载，每次只加载一个tab
       }
     )) : null;
     return <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>

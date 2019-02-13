@@ -4,8 +4,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationUtil from '../navigator/NavigationUtil';
 import NavigationBar from '../common/NavigationBar';
-import {createAppContainer, createMaterialTopTabNavigator} from "react-navigation";
-import {FLAG_STORAGE} from "../expand/dao/DataStore";
+import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 import {MORE_MENU} from "../common/MORE_MENU";
 import GlobalStyles from "../res/styles/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
@@ -24,6 +23,13 @@ export default class MyPage extends Component<Props> {
         break;
       case MORE_MENU.About:
         RouteName = 'AboutPage';
+        break;
+      case MORE_MENU.Custom_Key:
+      case MORE_MENU.Custom_Language:
+      case MORE_MENU.Remove_Key:
+        RouteName = 'CustomKeyPage';
+        params.isRemoveKey = menu === MORE_MENU.Remove_Key;
+        params.flag = menu !== MORE_MENU.Custom_Language ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language;
         break;
       case MORE_MENU.About_Author:
         RouteName = 'AboutMePage';
