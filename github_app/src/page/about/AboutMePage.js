@@ -8,8 +8,6 @@ import AboutCommon, {FLAG_ABOUT} from "./AboutCommon";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast from 'react-native-easy-toast';
 
-const THEME_COLOR = '#678';
-
 type Props = {};
 export default class AboutMePage extends Component<Props> {
   constructor(props) {
@@ -59,11 +57,12 @@ export default class AboutMePage extends Component<Props> {
     }
   }
   _item(data, isShow, key) {
+    const {theme} = this.params;
     return ViewUtil.getSettingItem(() => {
       this.setState({
         [key]: !this.state[key]
       })
-    }, data.name, THEME_COLOR,Ionicons, data.icon, isShow ? 'ios-arrow-up' : 'ios-arrow-down')
+    }, data.name, theme.themeColor, Ionicons, data.icon, isShow ? 'ios-arrow-up' : 'ios-arrow-down')
   }
   renderItems(dic, isShowAccount) {
     if (!dic) return null;
@@ -73,7 +72,7 @@ export default class AboutMePage extends Component<Props> {
       let title = isShowAccount ? dic[i].title + ':' + dic[i].account : dic[i].title;
       views.push(
         <View key={i}>
-          {ViewUtil.getSettingItem(() => this.onClick(dic[i]), title, THEME_COLOR)}
+          {ViewUtil.getSettingItem(() => this.onClick(dic[i]), title, theme.themeColor)}
           <View style={GlobalStyles.line}/>
         </View>
       )

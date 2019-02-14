@@ -21,7 +21,6 @@ class CustomKeyPage extends Component<Props> {
     super(props);
     this.params = this.props.navigation.state.params;
     this.backPress = new BackPressComponent({backPress: (e) => this.onBackPress(e)});
-    console.log(this.params.isRemoveKey);
     this.changeValues = [];
     this.isRemoveKey = !!this.params.isRemoveKey;
     this.languageDao = new LanguageDao(this.params.flag);
@@ -123,11 +122,12 @@ class CustomKeyPage extends Component<Props> {
     })
   }
   _checkedImage(checked) {
+    const {theme} = this.props;
     return <Ionicons
       name={checked ? 'ios-checkbox' : 'md-square-outline'}
       size={20}
       style={{
-        color: THEME_COLOR,
+        color: theme.themeColor,
       }}/>
   }
   renderCheckBox(data, index) {
@@ -159,18 +159,19 @@ class CustomKeyPage extends Component<Props> {
     return views;
   }
   render() {
+    const {theme} = this.props;
     let title = this.isRemoveKey ? '标签移除' : '自定义标签';
     title = this.params.flag === FLAG_LANGUAGE.flag_language ? '自定义语言' : title;
     let rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content',
       hidden: true
     };
     let navigationBar = <NavigationBar
       title={title}
       statusBar={statusBar}
-      style={{backgroundColor: THEME_COLOR,}}
+      style={theme.styles.navBar}
       leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
       rightButton={ViewUtil.getRightButton(rightButtonTitle, () => this.onSave())}
     />;
@@ -184,6 +185,7 @@ class CustomKeyPage extends Component<Props> {
 }
 
 const mapPopularStateToProps = state => ({
+  theme: state.theme.theme,
   language: state.language,
 });
 const mapPopularDispatchToProps = dispatch => ({

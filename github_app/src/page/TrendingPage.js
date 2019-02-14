@@ -41,13 +41,13 @@ class TrendingPage extends Component<Props> {
   }
   _getTabs() {
     const tabs = {};
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     this.preKeys = keys;
     keys.forEach((item, index) => {
       if (item.checked) {
         tabs[`tab${index}`] = {
           // screen: TrendingTab,  // 不传参数的写法
-          screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item.name}/>,  // 传递参数的写法
+          screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item.name} theme={theme}/>,  // 传递参数的写法
           navigationOptions: {
             title: item.name
           }
@@ -87,7 +87,9 @@ class TrendingPage extends Component<Props> {
     </View>
   }
   _tabNav() {
-    if (!this.tabNav || !ArrayUtil.isEqual(this.preKeys, this.props.keys)) {
+    const {theme} = this.props;
+    if (theme !== this.theme || !this.tabNav || !ArrayUtil.isEqual(this.preKeys, this.props.keys)) {
+      this.theme = theme;
       // 动态设置top tab
       this.tabNav = createAppContainer(createMaterialTopTabNavigator(
         this._getTabs(), {
@@ -96,7 +98,7 @@ class TrendingPage extends Component<Props> {
             upperCaseLabel: false, // 是否使标签大写，默认true
             scrollEnabled: true, // 是否支持 选项卡滚动，默认false
             style: {
-              backgroundColor: '#678',
+              backgroundColor: theme.themeColor,
               height: 30
             },
             indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
@@ -109,16 +111,16 @@ class TrendingPage extends Component<Props> {
     return this.tabNav;
   }
   render() {
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content'
     };
     let navigationBar = <NavigationBar
       title={'趋势'}
       titleView={this.renderTitleView()}
       statusBar={statusBar}
-      style={{backgroundColor: THEME_COLOR,}}
+      style={{backgroundColor: theme.themeColor,}}
     />;
     const TabNavigator = keys.length ? this._tabNav() : null;
     return <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
@@ -130,11 +132,13 @@ class TrendingPage extends Component<Props> {
 }
 
 const mapTrendingStateToProps = state => ({
+  theme: state.theme.theme,
   keys: state.language.languages
 });
 const mapTrendingDispatchToProps = dispatch => ({
   onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag))
 });
+
 export default connect(mapTrendingStateToProps, mapTrendingDispatchToProps)(TrendingPage);
 
 class TrendingTab extends Component<Props> {
@@ -201,11 +205,14 @@ class TrendingTab extends Component<Props> {
     return URL + key + '?' + this.timeSpan.searchText;
   }
   renderItem(data) {
+    const {theme} = this.props;
     const item = data.item;
     return <TrendingItem
+      theme={theme}
       projectModel={item}
       onSelect={(callback) => {
         NavigationUtil.goPage({
+          theme,
           projectModel: item,
           flag: FLAG_STORAGE.flag_trending,
           callback
@@ -224,6 +231,7 @@ class TrendingTab extends Component<Props> {
       </View>
   }
   render() {
+    const {theme} = this.props;
     let store = this._store();
     return (
       <View style={GlobalStyles.root_container}>
@@ -234,9 +242,9 @@ class TrendingTab extends Component<Props> {
           refreshControl={
             <RefreshControl
               title={'loading'}
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
-              tintColor={THEME_COLOR}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
+              tintColor={theme.themeColor}
               refreshing={store.isLoading}
               onRefresh={() => this.loadData()}/>
           }

@@ -8,13 +8,14 @@ import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 import {MORE_MENU} from "../common/MORE_MENU";
 import GlobalStyles from "../res/styles/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
-
-const THEME_COLOR = '#678';
+import actions from "../action";
+import {connect} from "react-redux";
 
 type Props = {};
-export default class MyPage extends Component<Props> {
+class MyPage extends Component<Props> {
   onclick(menu) {
-    let RouteName, params = {};
+    const {theme} = this.props;
+    let RouteName, params = {theme};
     switch (menu) {
       case MORE_MENU.Tutorial:
         RouteName = 'WebViewPage';
@@ -39,6 +40,10 @@ export default class MyPage extends Component<Props> {
       case MORE_MENU.About:
         RouteName = 'AboutPage';
         break;
+      case MORE_MENU.Custom_Theme:
+        const {onShowCustomThemeView} = this.props;
+        onShowCustomThemeView(true);
+        break;
       case MORE_MENU.About_Author:
         RouteName = 'AboutMePage';
         break;
@@ -48,11 +53,13 @@ export default class MyPage extends Component<Props> {
     }
   }
   getItem(menu) {
-    return ViewUtil.getMenuItem(() => this.onclick(menu), menu, THEME_COLOR)
+    const {theme} = this.props;
+    return ViewUtil.getMenuItem(() => this.onclick(menu), menu, theme.themeColor)
   }
   render() {
+    const {theme} = this.props;
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content',
       hidden: true
     };
@@ -60,7 +67,7 @@ export default class MyPage extends Component<Props> {
       <NavigationBar
         title={'我的'}
         statusBar={statusBar}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
       />;
     return (
       <View style={[GlobalStyles.root_container, {marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0}]}>
@@ -75,13 +82,13 @@ export default class MyPage extends Component<Props> {
               <Ionicons
                 name={MORE_MENU.About.icon}
                 size={40}
-                style={{marginRight: 10,color: THEME_COLOR}}/>
+                style={{marginRight: 10,color: theme.themeColor}}/>
               <Text>Github</Text>
             </View>
             <Ionicons
               name={'ios-arrow-forward'}
               size={16}
-              style={{marginRight: 10,alignSelf: 'center',color: THEME_COLOR}}/>
+              style={{marginRight: 10,alignSelf: 'center',color: theme.themeColor}}/>
           </TouchableOpacity>
           <View style={GlobalStyles.line}/>
           {this.getItem(MORE_MENU.Tutorial)}
@@ -121,6 +128,16 @@ export default class MyPage extends Component<Props> {
     );
   }
 }
+
+// 订阅state
+const mapStateToProps = state => ({
+  theme: state.theme.theme,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(MyPage)
 
 const styles = StyleSheet.create({
   about_left: {

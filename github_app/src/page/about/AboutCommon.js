@@ -8,11 +8,12 @@ import GlobalStyles from "../../res/styles/GlobalStyles";
 import ViewUtil from "../../util/ViewUtil";
 
 
+
 const window = Dimensions.get('window');
-const THEME_COLOR = '#678';
 const AVATAR_SIZE = 90;
 const PARALLAX_HEADER_HEIGHT = 270;
-const STICKY_HEADER_HEIGHT = (Platform.OS === 'ios') ? GlobalStyles.nav_bar_height_ios + 20 : GlobalStyles.nav_bar_height_android;
+const TOP = (Platform.OS === 'ios') ? 20 + (DeviceInfo.isIPhoneX_deprecated ? 24 : 0) : 0;
+const STICKY_HEADER_HEIGHT = (Platform.OS === 'ios') ? GlobalStyles.nav_bar_height_ios + TOP : GlobalStyles.nav_bar_height_android;
 
 export const FLAG_ABOUT = {
   flag_about: 'about',
@@ -65,12 +66,14 @@ export default class AboutCommon {
   };
   onShare() {}
   getParallaxRenderConfig(params) {
+    console.log(params);
     let config = {};
     let avatar = typeof(params.avatar) === 'string' ? {uri: params.avatar} : params.avatar;
     config.renderBackground = () => (
       <View key="background">
         <Image style={{width: window.width, height: PARALLAX_HEADER_HEIGHT,}} source={avatar} />
-        <View style={{position: 'absolute',
+        <View style={{
+          position: 'absolute',
           top: 0,
           width: window.width,
           backgroundColor: 'rgba(0,0,0,.4)',
@@ -91,7 +94,7 @@ export default class AboutCommon {
     );
     config.renderStickyHeader = () => (
       <View key="sticky-header" style={styles.stickySection}>
-        <Text style={styles.stickySectionText}>{params.name}444</Text>
+        <Text style={styles.stickySectionText}>{params.name}</Text>
       </View>
     );
     config.renderFixedHeader = () => (
@@ -103,10 +106,11 @@ export default class AboutCommon {
     return config;
   }
   render(contentView, params) {
+    const {theme}=this.props;
     const renderConfig = this.getParallaxRenderConfig(params);
     return (
       <ParallaxScrollView
-        backgroundColor={THEME_COLOR}
+        backgroundColor={theme.themeColor}
         contentBackgroundColor={GlobalStyles.backgroundColor}
         parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
         stickyHeaderHeight={STICKY_HEADER_HEIGHT}  // 顶部悬浮的高度
@@ -118,7 +122,6 @@ export default class AboutCommon {
   }
 }
 
-const TOP = (Platform.OS === 'ios') ? 20 + (DeviceInfo.isIPhoneX_deprecated ? 24 : 0) : 0;
 
 const styles = StyleSheet.create({
   background: {
@@ -158,11 +161,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'column',
-    paddingTop: 50
+    paddingTop: 100
   },
   avatar: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
     marginBottom: 10,
     borderRadius: AVATAR_SIZE / 2
   },
@@ -177,5 +178,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 10,
     marginLeft: 10
-  }
+  },
 });

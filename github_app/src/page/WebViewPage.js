@@ -50,8 +50,9 @@ export default class WebViewPage extends Component<Props> {
     })
   }
   render() {
+    const {theme} = this.params;
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content',
       hidden: true
     };
@@ -59,7 +60,7 @@ export default class WebViewPage extends Component<Props> {
       <NavigationBar
         title={this.state.title}
         statusBar={statusBar}
-        style={{backgroundColor: THEME_COLOR}}
+        style={theme.styles.navBar}
         leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
       />;
     return (

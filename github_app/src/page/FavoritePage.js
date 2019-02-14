@@ -18,35 +18,33 @@ import EventBus from 'react-native-event-bus'
 import EventTypes from '../util/EventTypes';
 import GlobalStyles from "../res/styles/GlobalStyles";
 
-const THEME_COLOR = '#678';
-const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
-
 type Props = {};
-export default class FavoritePage extends Component<Props> {
+class FavoritePage extends Component<Props> {
   constructor(props) {
     super(props);
     this.tabNames = ['最热', '趋势']
   }
   render() {
+    const {theme} = this.props;
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content'
     };
     let navigationBar = <NavigationBar
       title={'收藏'}
       statusBar={statusBar}
-      style={{backgroundColor: THEME_COLOR,}}
+      style={{backgroundColor: theme.themeColor,}}
     />;
 
     const TabNavigator = createAppContainer(createMaterialTopTabNavigator({
       'Popular': {
-        screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_popular}/>,  // 传递参数的写法
+        screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_popular} theme={theme}/>,  // 传递参数的写法
         navigationOptions: {
           title: '最热'
         }
       },
       'Trending': {
-        screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_trending}/>,  // 传递参数的写法
+        screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_trending} theme={theme}/>,  // 传递参数的写法
         navigationOptions: {
           title: '趋势'
         }
@@ -57,7 +55,7 @@ export default class FavoritePage extends Component<Props> {
           upperCaseLabel: false, // 是否使标签大写，默认true
           scrollEnabled: false, // 是否支持 选项卡滚动，默认false
           style: {
-            backgroundColor: '#678',
+            backgroundColor: theme.themeColor,
             height: 30
           },
           indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
@@ -71,6 +69,11 @@ export default class FavoritePage extends Component<Props> {
     </View>;
   }
 }
+
+const mapFavoriteStateToProps = state => ({
+  theme: state.theme.theme
+});
+export default connect(mapFavoriteStateToProps)(FavoritePage);
 
 class FavoriteTab extends Component<Props> {
   constructor(props) {
@@ -116,18 +119,20 @@ class FavoriteTab extends Component<Props> {
     }
   }
   renderItem(data) {
+    const {theme} = this.props;
     const item = data.item;
     const Item = this.storeName === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem;
     return <Item
+      theme={theme}
       projectModel={item}
       onSelect={(callback) => {  // callback详情点击收藏时改变当前对应的列表的收藏状态
         NavigationUtil.goPage({
+          theme,
           projectModel: item,
           flag: this.storeName,
           callback
         }, 'DetailPage')
       }}
-      // onFavorite={(item, isFavorite) => FavoriteUtil.onFavorite(this.favoriteDao, item, isFavorite, this.storeName)}
       onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
     />
   }
@@ -141,6 +146,7 @@ class FavoriteTab extends Component<Props> {
       </View>
   }
   render() {
+    const {theme} = this.props;
     let store = this._store();
     return (
       <View style={GlobalStyles.root_container}>
@@ -151,9 +157,9 @@ class FavoriteTab extends Component<Props> {
           refreshControl={
             <RefreshControl
               title={'loading'}
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
-              tintColor={THEME_COLOR}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
+              tintColor={theme.themeColor}
               refreshing={store.isLoading}
               onRefresh={() => this.loadData(true)}/>
           }

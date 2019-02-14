@@ -72,7 +72,6 @@ class SortKeyPage extends Component<Props> {
       let data = dataArray[i];
       if (data.checked) keys.push(data);
     }
-    console.log(keys);
     return keys;
   }
   static _flag(props) {
@@ -137,16 +136,17 @@ class SortKeyPage extends Component<Props> {
     return sortResultArray;
   }
   render() {
+    const {theme} = this.params;
     let title = this.params.flag === FLAG_LANGUAGE.flag_language ? '语言排序' : '标签排序';
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content',
       hidden: true
     };
     let navigationBar = <NavigationBar
       title={title}
       statusBar={statusBar}
-      style={{backgroundColor: THEME_COLOR,}}
+      style={theme.styles.navBar}
       leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
       rightButton={ViewUtil.getRightButton('保存', () => this.onSave())}
     />;
@@ -156,7 +156,7 @@ class SortKeyPage extends Component<Props> {
         data={this.state.checkedArray}
         order={Object.keys(this.state.checkedArray)}
         onRowMoved={e => {
-          this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0])
+          this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0]);
           this.forceUpdate()
         }}
         renderRow={row => <SortCell data={row} {...this.params}/>}
@@ -167,6 +167,7 @@ class SortKeyPage extends Component<Props> {
 
 class SortCell extends Component {
   render() {
+    const {theme} = this.props;
     return (
       <TouchableHighlight
         underlayColor={'#eee'}
@@ -176,7 +177,7 @@ class SortCell extends Component {
           <MaterialCommunityIcons
             name={'sort'}
             size={16}
-            style={{marginRight: 10, color: THEME_COLOR}}/>
+            style={{marginRight: 10, color: theme.themeColor}}/>
           <Text>{this.props.data.name}</Text>
         </View>
       </TouchableHighlight>
@@ -185,6 +186,7 @@ class SortCell extends Component {
 }
 
 const mapPopularStateToProps = state => ({
+  theme: state.theme.theme,
   language: state.language,
 });
 const mapPopularDispatchToProps = dispatch => ({

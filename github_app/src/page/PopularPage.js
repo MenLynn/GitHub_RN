@@ -20,7 +20,6 @@ import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
-const THEME_COLOR = '#678';
 const pageSize = 10;
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 
@@ -33,12 +32,12 @@ class PopularPage extends Component<Props> {
   }
   _getTabs() {
     const tabs = {};
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     keys.forEach((item, index) => {
       if (item.checked) {
         tabs[`tab${index}`] = {
           // screen: PopularTab,  // 不传参数的写法
-          screen: props => <PopularTabPage {...props} tabLabel={item.name}/>,  // 传递参数的写法
+          screen: props => <PopularTabPage {...props} tabLabel={item.name} theme={theme}/>,  // 传递参数的写法
           navigationOptions: {
             title: item.name
           }
@@ -48,15 +47,15 @@ class PopularPage extends Component<Props> {
     return tabs;
   }
   render() {
-    const {keys} = this.props;
+    const {keys, theme} = this.props;
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content'
     };
     let navigationBar = <NavigationBar
       title={'最热'}
       statusBar={statusBar}
-      style={{backgroundColor: THEME_COLOR,}}
+      style={theme.styles.navBar}
     />;
     // 动态设置top tab
     const TabNavigator = keys.length ? createAppContainer(createMaterialTopTabNavigator(
@@ -66,7 +65,7 @@ class PopularPage extends Component<Props> {
           upperCaseLabel: false, // 是否使标签大写，默认true
           scrollEnabled: true, // 是否支持 选项卡滚动，默认false
           style: {
-            backgroundColor: '#678',
+            backgroundColor: theme.themeColor,
             height: 30
           },
           indicatorStyle: styles.indicatorStyle, // 标签指示器的样式
@@ -83,13 +82,13 @@ class PopularPage extends Component<Props> {
 }
 
 const mapPopularStateToProps = state => ({
+  theme: state.theme.theme,
   keys: state.language.keys
 });
 const mapPopularDispatchToProps = dispatch => ({
   onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag))
 });
 export default connect(mapPopularStateToProps, mapPopularDispatchToProps)(PopularPage);
-
 
 
 class PopularTab extends Component<Props> {
@@ -147,11 +146,14 @@ class PopularTab extends Component<Props> {
     return URL + key + QUERY_STR;
   }
   renderItem(data) {
+    const {theme} = this.props;
     const item = data.item;
     return <PopularItem
+      theme={theme}
       projectModel={item}
       onSelect={(callback) => {  // callback详情点击收藏时改变当前对应的列表的收藏状态
         NavigationUtil.goPage({
+          theme,
           projectModel: item,
           flag: FLAG_STORAGE.flag_popular,
           callback
@@ -170,6 +172,7 @@ class PopularTab extends Component<Props> {
       </View>
   }
   render() {
+    const {theme} = this.props;
     let store = this._store();
     return (
       <View style={GlobalStyles.root_container}>
@@ -180,9 +183,9 @@ class PopularTab extends Component<Props> {
           refreshControl={
             <RefreshControl
               title={'loading'}
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
-              tintColor={THEME_COLOR}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
+              tintColor={theme.themeColor}
               refreshing={store.isLoading}
               onRefresh={() => this.loadData()}/>
           }
