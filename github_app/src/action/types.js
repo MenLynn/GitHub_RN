@@ -1,6 +1,7 @@
 export default {
   THEME_CHANGE: "THEME_CHANGE", // 主题
   THEME_INIT: "THEME_INIT",
+  SHOW_THEME_VIEW: "SHOW_THEME_VIEW", // 展示自定义主题的dialog
 
   // 最热 模块
   POPULAR_REFRESH: "POPULAR_REFRESH", // 列表下拉刷新
