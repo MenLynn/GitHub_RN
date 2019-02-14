@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {DeviceInfo, Platform, StyleSheet, Text, TouchableOpacity, View, WebView} from 'react-native';
+import {DeviceInfo, StyleSheet, TouchableOpacity, View, WebView} from 'react-native';
 import NavigationBar from "../common/NavigationBar";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ViewUtil from '../util/ViewUtil';
@@ -7,7 +7,6 @@ import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressComponent from "../common/BackPressComponent";
 import FavoriteDao from "../expand/dao/FavoriteDao";
 
-const THEME_COLOR = '#678';
 const TRENDING_URL = 'https://github.com/';
 
 type Props = {};

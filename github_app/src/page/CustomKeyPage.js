@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, Alert, View, Button, ScrollView, DeviceInfo} from 'react-native';
+import {StyleSheet, Alert, View, ScrollView, DeviceInfo} from 'react-native';
 import CheckBox from 'react-native-check-box';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {connect} from 'react-redux';
@@ -12,8 +12,6 @@ import LanguageDao from "../expand/dao/LanguageDao";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
 import ArrayUtil from "../util/ArrayUtil";
-
-const THEME_COLOR = '#678';
 
 type Props = {};
 class CustomKeyPage extends Component<Props> {

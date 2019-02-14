@@ -6,8 +6,6 @@ import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressComponent from "../common/BackPressComponent";
 import GlobalStyles from "../res/styles/GlobalStyles";
 
-const THEME_COLOR = '#678';
-
 type Props = {};
 export default class WebViewPage extends Component<Props> {
   constructor(props) {

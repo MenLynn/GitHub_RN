@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Platform, StyleSheet, Text, View, ScrollView, TouchableOpacity, DeviceInfo} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, DeviceInfo} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationUtil from '../navigator/NavigationUtil';
 import NavigationBar from '../common/NavigationBar';

@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, Alert, View, TouchableHighlight, DeviceInfo} from 'react-native';
-import CheckBox from 'react-native-check-box';
 import SortableListView from 'react-native-sortable-listview';
-import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {connect} from 'react-redux';
 import actions from '../action/index';
@@ -14,8 +12,6 @@ import LanguageDao from "../expand/dao/LanguageDao";
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
 import ArrayUtil from "../util/ArrayUtil";
-
-const THEME_COLOR = '#678';
 
 type Props = {};
 class SortKeyPage extends Component<Props> {

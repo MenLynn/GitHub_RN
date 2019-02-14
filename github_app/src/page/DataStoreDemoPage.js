@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TextInput, Button} from 'react-native';
-import {
-  createAppContainer,
-  createMaterialTopTabNavigator
-} from 'react-navigation';
+import {StyleSheet, Text, View, TextInput} from 'react-native';
 import DataStore from '../expand/dao/DataStore';
 
 type Props = {};

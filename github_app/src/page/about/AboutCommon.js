@@ -7,8 +7,6 @@ import github_app_config from "../../res/data/github_app_config";
 import GlobalStyles from "../../res/styles/GlobalStyles";
 import ViewUtil from "../../util/ViewUtil";
 
-
-
 const window = Dimensions.get('window');
 const AVATAR_SIZE = 90;
 const PARALLAX_HEADER_HEIGHT = 270;

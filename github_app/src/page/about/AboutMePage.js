@@ -29,8 +29,10 @@ export default class AboutMePage extends Component<Props> {
   }
   onClick(tab) {
     if (!tab) return;
+    const {theme} = this.params;
     if (tab.url) {
       NavigationUtil.goPage({
+        theme,
         title: tab.title,
         url: tab.url
       }, 'WebViewPage');

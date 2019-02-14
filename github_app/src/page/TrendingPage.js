@@ -22,7 +22,6 @@ import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 import ArrayUtil from "../util/ArrayUtil";
 
 const URL = 'https://github.com/trending/';
-const THEME_COLOR = '#678';
 const pageSize = 10;
 const EVENT_TYPE_TIME_SPAN_CHANGE = 'EVENT_TYPE_TIME_SPAN_CHANGE'; // 事件常量过多时  可单独建立文件
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);

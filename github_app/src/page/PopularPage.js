@@ -3,7 +3,7 @@ import {
   createAppContainer,
   createMaterialTopTabNavigator
 } from 'react-navigation';
-import {StyleSheet, Text, View, Button, FlatList, RefreshControl, ActivityIndicator, DeviceInfo} from 'react-native';
+import {StyleSheet, Text, View, FlatList, RefreshControl, ActivityIndicator, DeviceInfo} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import {connect} from 'react-redux';
 import actions from '../action/index';
